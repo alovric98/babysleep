@@ -3,1892 +3,344 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>Baby Sleep · v2.0</title>
+<title>Sleep Logic · v2.6</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300;1,9..144,400&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,400&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
-/* ═══════════════════════════════════════════════════════
-   CSS VARIABLES – warm light palette
-═══════════════════════════════════════════════════════ */
 :root {
-  --bg:           #FDF8F3;
-  --bg-2:         #FFFCF9;
-  --bg-card:      rgba(255, 252, 249, 0.88);
-  --bg-card-hard: #FFFDF9;
-  --border:       rgba(201, 132, 138, 0.15);
-  --border-light: rgba(201, 132, 138, 0.08);
-
-  --text-1:  #2C2420;
-  --text-2:  #7A6E6A;
-  --text-3:  #B0A8A4;
-
-  /* v1 warm rose family */
-  --rose:    #C9848A;
-  --rose-d:  #B56A70;
-  --rose-l:  #F5D9DB;
-  --rose-ll: #FBF2F3;
-
-  /* lavender */
-  --lav:     #9B7BB0;
-  --lav-l:   #EAE4F4;
-  --lav-ll:  #F4F1FA;
-
-  /* sage */
-  --sage:    #6A9E7A;
-  --sage-l:  #D8EDD4;
-  --sage-ll: #EFF8ED;
-
-  /* gold */
-  --gold:    #C4913A;
-  --gold-l:  #F5E8CC;
-  --gold-ll: #FDF6E8;
-
-  --shadow-xs: 0 1px 6px rgba(44, 36, 32, 0.06);
-  --shadow-sm: 0 2px 14px rgba(44, 36, 32, 0.08);
-  --shadow-md: 0 8px 32px rgba(44, 36, 32, 0.11);
-  --shadow-lg: 0 20px 60px rgba(44, 36, 32, 0.14);
-
-  --radius:    20px;
-  --radius-sm: 14px;
-  --radius-xs: 10px;
-
-  --font-body:    'Nunito', sans-serif;
-  --font-display: 'Fraunces', serif;
+  --bg: #FDF8F3; --bg-card: rgba(255, 252, 249, 0.88); --text-1: #2C2420; --text-2: #7A6E6A; --text-3: #B0A8A4;
+  --rose: #C9848A; --rose-ll: #FBF2F3; --lav: #9B7BB0; --lav-l: #EAE4F4; --sage: #6A9E7A; --sage-ll: #EFF8ED;
+  --gold: #C4913A; --gold-ll: #FDF6E8; --shadow-sm: 0 2px 14px rgba(44, 36, 32, 0.08); --radius: 20px;
 }
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text-1); min-height: 100vh; overflow-x: hidden; line-height: 1.5; }
+body::before { content: ''; position: fixed; inset: 0; background: radial-gradient(ellipse 80% 50% at 15% 10%, rgba(232,180,184,0.2) 0%, transparent 60%), radial-gradient(ellipse 60% 40% at 85% 80%, rgba(200,187,219,0.15) 0%, transparent 55%); pointer-events: none; }
+.app { position: relative; max-width: 430px; margin: 0 auto; padding-bottom: 60px; }
 
-/* ═══════════════════════════════════════════════════════
-   RESET & BASE
-═══════════════════════════════════════════════════════ */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  -webkit-tap-highlight-color: transparent;
-}
+/* HEADER */
+.header { padding: 50px 20px 25px; display: flex; align-items: flex-start; justify-content: space-between; }
+.header-icon { width: 60px; height: 60px; background: linear-gradient(135deg, #F5D9DB, #EAE4F4); border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 6px 20px rgba(201,132,138,0.2); }
+.header h1 { font-family: 'Fraunces', serif; font-weight: 300; font-size: 28px; }
+.header h1 em { color: var(--rose); font-style: italic; }
+.header-sub { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-3); margin-top: 6px; opacity: 0.8; line-height: 1.4; }
 
-html { scroll-behavior: smooth; }
+.lang-toggle { display: flex; background: #FFF; border: 1px solid var(--rose-ll); border-radius: 30px; padding: 3px; }
+.lang-btn { border: none; background: transparent; font-size: 11px; font-weight: 700; color: var(--text-3); padding: 5px 12px; border-radius: 20px; cursor: pointer; }
+.lang-btn.active { background: linear-gradient(135deg, var(--rose), var(--lav)); color: white; }
 
-body {
-  font-family: var(--font-body);
-  background: var(--bg);
-  color: var(--text-1);
-  min-height: 100vh;
-  min-height: -webkit-fill-available;
-  overflow-x: hidden;
-  font-size: 16px;
-  line-height: 1.5;
-}
+/* INPUT CARDS */
+.card { background: var(--bg-card); backdrop-filter: blur(15px); border: 1px solid rgba(201,132,138,0.1); border-radius: var(--radius); padding: 18px; margin: 0 14px 12px; box-shadow: var(--shadow-sm); }
+.card-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-3); margin-bottom: 12px; }
+.age-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.age-btn { border: none; background: var(--rose-ll); border-radius: 12px; padding: 10px 0; cursor: pointer; transition: 0.2s; }
+.age-btn .num { display: block; font-size: 17px; font-weight: 800; color: var(--rose); }
+.age-btn .unit { font-size: 9px; color: var(--text-3); font-weight: 700; text-transform: uppercase; }
+.age-btn.active { background: linear-gradient(135deg, var(--rose), var(--lav)); transform: scale(1.05); }
+.age-btn.active .num, .age-btn.active .unit { color: white; }
+.ww-hint { margin-top: 10px; padding: 6px; background: var(--rose-ll); border-radius: 10px; font-size: 11px; color: var(--rose); text-align: center; font-weight: 600; }
 
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 80% 50% at 15% 10%, rgba(232,180,184,0.28) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 85% 80%, rgba(200,187,219,0.22) 0%, transparent 55%),
-    radial-gradient(ellipse 50% 60% at 50% 50%, rgba(168,197,160,0.07) 0%, transparent 70%);
-  pointer-events: none;
-  z-index: 0;
-}
+input[type="time"] { border: none; background: transparent; font-family: inherit; font-size: 28px; font-weight: 700; color: var(--text-1); outline: none; width: 100%; }
+/* SAKRIVANJE AM/PM OZNAKE */
+input[type="time"]::-webkit-datetime-edit-ampm-field { display: none; }
+input[type="time"]::-moz-time-text { display: none; }
 
-.app {
-  position: relative;
-  z-index: 1;
-  max-width: 430px;
-  margin: 0 auto;
-  padding: 0 0 60px;
-}
+.nap-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.nap-val { font-size: 38px; font-weight: 800; color: var(--rose); }
+.nap-val sup { font-size: 14px; color: var(--text-3); }
+.nap-pill { font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
+.nap-pill.good { background: #D8EDD4; color: #5E9E74; }
+.nap-pill.micro { background: #FDE8E8; color: #B83030; }
+input[type="range"] { -webkit-appearance: none; width: 100%; height: 5px; background: #EEE; border-radius: 5px; outline: none; }
+input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 24px; height: 24px; background: #FFF; border: 2px solid var(--rose); border-radius: 50%; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 
-/* ═══════════════════════════════════════════════════════
-   HEADER
-═══════════════════════════════════════════════════════ */
-.header {
-  padding: env(safe-area-inset-top, 48px) 20px 20px;
-  padding-top: max(env(safe-area-inset-top, 0px), 52px);
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-}
+.calc-btn { width: calc(100% - 28px); margin: 0 14px 15px; padding: 18px; background: linear-gradient(135deg, var(--rose), var(--lav)); color: #FFF; border: none; border-radius: var(--radius); font-weight: 800; font-size: 16px; cursor: pointer; box-shadow: 0 8px 20px rgba(201,132,138,0.3); }
 
-.header-left {}
+/* RESULTS */
+.results { display: none; margin-bottom: 20px; }
+.results.visible { display: block; animation: slideUp 0.4s ease forwards; }
+@keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0 14px 12px; }
+.res-card { padding: 15px; border-radius: var(--radius); border: 1px solid #FFF; box-shadow: var(--shadow-sm); }
+.res-card.target { background: #F9E8EA; } .res-card.reset { background: #E8F0E8; }
+.res-card label { font-size: 9px; font-weight: 700; color: var(--text-3); text-transform: uppercase; display: block; margin-bottom: 4px; }
+.res-card .time { font-size: 28px; font-weight: 800; }
+.countdown-card { background: #2C2420; border-radius: var(--radius); padding: 20px; margin: 0 14px 12px; color: #FFF; transition: 1s; }
+.countdown-card.pulse { background: #6A9E7A !important; animation: pulse 2s infinite alternate; }
+@keyframes pulse { from { opacity: 0.8; } to { opacity: 1; } }
+.cd-time { font-size: 42px; font-weight: 700; line-height: 1; }
+.cd-phase { font-size: 10px; text-transform: uppercase; color: rgba(255,255,255,0.5); font-weight: 700; margin-bottom: 5px; }
+.advice-card { background: var(--gold-ll); padding: 18px; border-radius: var(--radius); margin: 0 14px 12px; border: 1px solid rgba(196,145,58,0.1); }
+.adv-text { font-size: 12px; color: var(--text-2); line-height: 1.6; }
+.new-btn { width: calc(100% - 28px); margin: 0 14px 20px; padding: 12px; background: transparent; border: 1px solid var(--rose-ll); border-radius: 15px; color: var(--text-3); font-weight: 700; font-size: 13px; cursor: pointer; }
 
-.header-icon {
-  width: 66px;
-  height: 66px;
-  background: linear-gradient(135deg, var(--rose-l), var(--lav-l));
-  border-radius: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 32px;
-  box-shadow: 0 6px 22px rgba(201,132,138,0.30);
-  margin-bottom: 14px;
-  animation: floatIcon 4s ease-in-out infinite;
-}
+/* JOURNAL */
+.journal-section { display: none; margin: 0 14px 40px; }
+.journal-section.visible { display: block; }
+.section-divider { margin: 20px 0 12px; display: flex; align-items: center; gap: 10px; color: var(--text-3); font-size: 10px; font-weight: 700; text-transform: uppercase; }
+.section-divider::after { content: ''; flex: 1; height: 1px; background: #EEE; }
 
-@keyframes floatIcon {
-  0%, 100% { transform: translateY(0px); }
-  50%       { transform: translateY(-5px); }
-}
-
-.header h1 {
-  font-family: var(--font-display);
-  font-weight: 300;
-  font-size: 30px;
-  line-height: 1.15;
-  color: var(--text-1);
-  letter-spacing: -0.3px;
-}
-
-.header h1 em {
-  font-style: italic;
-  color: var(--rose);
-}
-
-.header-sub {
-  font-size: 12px;
-  color: var(--text-3);
-  margin-top: 4px;
-  font-weight: 500;
-}
-
-/* ─── Language Toggle ─── */
-.lang-toggle {
-  display: flex;
-  align-items: center;
-  background: var(--bg-card-hard);
+/* NOVI IZGLED DNEVNIKA S PADAJUĆIM IZBORNIKOM */
+.date-select {
+  width: 100%; 
+  padding: 12px 16px; /* Povećan lijevi padding na 16px */
+  border-radius: 12px; 
   border: 1px solid var(--border);
-  border-radius: 30px;
-  padding: 3px;
-  gap: 2px;
-  flex-shrink: 0;
-  box-shadow: var(--shadow-xs);
-  margin-top: 4px;
-}
-
-.lang-btn {
-  border: none;
-  background: transparent;
-  font-family: var(--font-body);
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--text-3);
-  padding: 5px 10px;
-  border-radius: 22px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  letter-spacing: 0.3px;
-}
-
-.lang-btn.active {
-  background: linear-gradient(135deg, var(--rose), var(--lav));
-  color: white;
-  box-shadow: 0 3px 10px rgba(201,132,138,0.4);
-}
-
-/* ═══════════════════════════════════════════════════════
-   CARDS
-═══════════════════════════════════════════════════════ */
-.card {
-  background: var(--bg-card);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px 18px;
-  margin: 0 14px 12px;
-  box-shadow: var(--shadow-sm);
-}
-
-.card-label {
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1.1px;
-  color: var(--text-3);
-  margin-bottom: 12px;
-}
-
-/* ═══════════════════════════════════════════════════════
-   AGE SELECTOR – 5×2 grid
-═══════════════════════════════════════════════════════ */
-.age-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 6px;
-}
-
-.age-btn {
-  border: 2px solid transparent;
-  background: var(--rose-ll);
-  border-radius: var(--radius-sm);
-  padding: 10px 4px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
-  -webkit-appearance: none;
-  box-shadow: var(--shadow-xs);
-}
-
-.age-btn .num {
-  display: block;
-  font-size: 18px;
-  font-weight: 800;
-  color: var(--rose);
-  line-height: 1;
-  margin-bottom: 2px;
-}
-
-.age-btn .unit {
-  display: block;
-  font-size: 9px;
-  color: var(--text-3);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-}
-
-.age-btn.active {
-  background: linear-gradient(135deg, var(--rose), var(--lav));
-  border-color: transparent;
-  transform: scale(1.07);
-  box-shadow: 0 5px 18px rgba(201,132,138,0.42);
-}
-
-.age-btn.active .num,
-.age-btn.active .unit {
-  color: white;
-}
-
-/* WW badge on selected */
-.ww-hint {
-  margin-top: 10px;
-  padding: 7px 12px;
-  background: var(--rose-ll);
-  border: 1px solid var(--rose-l);
-  border-radius: var(--radius-xs);
-  font-size: 11px;
-  color: var(--rose);
-  font-weight: 600;
-  text-align: center;
-  transition: all 0.3s ease;
-}
-
-/* ═══════════════════════════════════════════════════════
-   TIME INPUT
-═══════════════════════════════════════════════════════ */
-.time-field {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.time-icon-box {
-  width: 44px;
-  height: 44px;
-  background: var(--lav-l);
-  border-radius: var(--radius-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-  flex-shrink: 0;
-}
-
-.time-input-wrap { flex: 1; }
-
-.time-input-wrap label {
-  display: block;
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--text-3);
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  margin-bottom: 2px;
-}
-
-input[type="time"] {
-  width: 100%;
-  border: none;
-  background: transparent;
-  font-family: var(--font-body);
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--text-1);
-  outline: none;
-  -webkit-appearance: none;
-  cursor: pointer;
-}
-
-/* ═══════════════════════════════════════════════════════
-   NAP SLIDER
-═══════════════════════════════════════════════════════ */
-.nap-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 14px;
-}
-
-.nap-value-display {
-  font-size: 42px;
-  font-weight: 800;
-  background: linear-gradient(135deg, var(--rose), var(--lav));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  letter-spacing: -1px;
-  line-height: 1;
-}
-
-.nap-value-display sup {
+  background: var(--rose-ll); 
+  color: var(--rose); 
+  font-weight: 800; 
   font-size: 14px;
-  font-weight: 700;
-  -webkit-text-fill-color: var(--text-3);
-  letter-spacing: 0;
-  margin-left: 2px;
-}
-
-.nap-category-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 700;
-  transition: all 0.25s ease;
-}
-
-.nap-category-pill.micro { background: #FDE8E8; color: #B83030; }
-.nap-category-pill.short { background: #FDF0D8; color: #9A6020; }
-.nap-category-pill.good  { background: var(--sage-l); color: var(--sage); }
-
-@media (prefers-color-scheme: dark) {
-  .nap-category-pill.micro { background: #2E1010; color: #E06060; }
-  .nap-category-pill.short { background: #2A1A00; color: #D4A050; }
-}
-
-.slider-track-wrap {
-  position: relative;
-  padding: 6px 0 14px;
-}
-
-input[type="range"] {
+  margin-bottom: 12px; 
+  outline: none; 
+  cursor: pointer; 
+  text-align: left; /* Promijenjeno s center na left */
+  font-family: inherit;
+  appearance: none; /* Uklanja sistemsku strelicu na nekim mobitelima za čišći look */
   -webkit-appearance: none;
-  width: 100%;
-  height: 5px;
-  border-radius: 5px;
-  outline: none;
-  cursor: pointer;
-  background: linear-gradient(
-    to right,
-    var(--rose) 0%,
-    var(--rose) var(--fill, 0%),
-    var(--border) var(--fill, 0%),
-    var(--border) 100%
-  );
 }
 
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: white;
-  border: 2.5px solid var(--rose);
-  box-shadow: 0 2px 12px rgba(201,132,138,0.4);
-  cursor: pointer;
-  transition: transform 0.15s;
-}
-
-input[type="range"]:active::-webkit-slider-thumb {
-  transform: scale(1.18);
-}
-
-.slider-labels {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 6px;
-}
-
-.slider-labels span {
-  font-size: 9px;
-  font-weight: 600;
-  color: var(--text-3);
-  letter-spacing: 0.2px;
-}
-
-/* Zone markers */
-.slider-zones {
-  display: flex;
-  gap: 4px;
-  margin-top: 8px;
-}
-
-.zone-chip {
-  flex: 1;
-  height: 3px;
-  border-radius: 3px;
-}
-.zone-chip.z1 { background: linear-gradient(90deg, #E06060, #C28030); }
-.zone-chip.z2 { background: linear-gradient(90deg, #C28030, #88B070); }
-.zone-chip.z3 { background: linear-gradient(90deg, #88B070, #5E9E74); }
-
-/* ═══════════════════════════════════════════════════════
-   CALCULATE BUTTON
-═══════════════════════════════════════════════════════ */
-.calc-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: calc(100% - 28px);
-  margin: 4px 14px 12px;
-  padding: 18px;
-  background: linear-gradient(135deg, var(--rose) 0%, var(--lav) 100%);
-  color: white;
-  border: none;
-  border-radius: var(--radius);
-  font-family: var(--font-body);
-  font-size: 17px;
-  font-weight: 800;
-  letter-spacing: 0.3px;
-  cursor: pointer;
-  box-shadow: 0 8px 28px rgba(201,132,138,0.45);
-  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
-  position: relative;
-  overflow: hidden;
-}
-
-.calc-btn::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 60%);
-  pointer-events: none;
-}
-
-.calc-btn:active {
-  transform: scale(0.97);
-  box-shadow: 0 4px 16px rgba(201,132,138,0.35);
-}
-
-.calc-btn-icon { font-size: 18px; }
-
-/* ═══════════════════════════════════════════════════════
-   DIVIDER
-═══════════════════════════════════════════════════════ */
-.section-divider {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 4px 14px 14px;
-}
-
-.section-divider::before,
-.section-divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-}
-
-.section-divider span {
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--text-3);
-  white-space: nowrap;
-}
-
-/* ═══════════════════════════════════════════════════════
-   RESULTS SECTION
-═══════════════════════════════════════════════════════ */
-.results {
-  opacity: 0;
-  transform: translateY(18px);
-  transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.34, 1.3, 0.64, 1);
-  pointer-events: none;
-}
-
-.results.visible {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
-/* ─── Result Time Cards ─── */
-.result-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin: 0 14px 12px;
-}
-
-.result-card {
-  border-radius: var(--radius);
-  padding: 16px 14px;
-  border: 1px solid rgba(255,255,255,0.7);
-  position: relative;
-  overflow: hidden;
-  box-shadow: var(--shadow-sm);
-}
-
-.result-card.r-target {
-  background: linear-gradient(145deg, #F9E8EA 0%, #EDE4F5 100%);
-}
-
-.result-card.r-reset {
-  background: linear-gradient(145deg, #E8F0E8 0%, #F5F1E4 100%);
-}
-
-.result-card::after {
-  content: attr(data-emoji);
-  position: absolute;
-  top: 8px;
-  right: 10px;
-  font-size: 24px;
-  opacity: 0.15;
-}
-
-.rc-label {
-  font-size: 9px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.9px;
-  color: var(--text-3);
-  margin-bottom: 6px;
-}
-
-.rc-time {
-  font-size: 32px;
-  font-weight: 800;
-  color: var(--text-1);
-  letter-spacing: -0.8px;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-}
-
-.rc-sub {
-  font-size: 10px;
-  color: var(--text-2);
-  margin-top: 5px;
-  font-weight: 500;
-  line-height: 1.4;
-}
-
-/* ─── Countdown ─── */
-.countdown-wrap {
-  margin: 0 14px 12px;
-}
-
-.countdown-card {
-  background: linear-gradient(135deg, #2C2420 0%, #3D2E4A 100%);
-  border-radius: var(--radius);
-  padding: 20px 20px;
-  position: relative;
-  overflow: hidden;
-  box-shadow: var(--shadow-lg);
-  transition: background 1.5s ease, opacity 1s ease, transform 1s ease;
-}
-
-.countdown-card::before {
-  content: '';
-  position: absolute;
-  width: 180px;
-  height: 180px;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--rose) 0%, transparent 70%);
-  top: -60px;
-  left: -60px;
-  opacity: 0.14;
-}
-
-.countdown-card::after {
-  content: '';
-  position: absolute;
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--lav) 0%, transparent 70%);
-  bottom: -50px;
-  right: -40px;
-  opacity: 0.14;
-}
-
-.cd-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-  position: relative;
-  z-index: 1;
-}
-
-.cd-label {
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: rgba(255,255,255,0.4);
-}
-
-.cd-phase {
-  font-size: 10px;
-  font-weight: 700;
-  color: rgba(255,255,255,0.5);
-  background: rgba(255,255,255,0.08);
-  border-radius: 20px;
-  padding: 3px 8px;
-  letter-spacing: 0.3px;
-}
-
-.cd-main {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  position: relative;
-  z-index: 1;
-}
-
-.cd-emoji {
-  font-size: 26px;
-  animation: breathe 3s ease-in-out infinite;
-}
-
-@keyframes breathe {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50%       { transform: scale(1.12); opacity: 0.85; }
-}
-
-.cd-time {
-  font-size: 46px;
-  font-weight: 700;
-  color: white;
-  letter-spacing: -1.5px;
-  font-variant-numeric: tabular-nums;
-  line-height: 1;
-}
-
-.cd-progress {
-  margin-top: 14px;
-  height: 3px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 3px;
-  overflow: hidden;
-  position: relative;
-  z-index: 1;
-}
-
-.cd-bar {
-  height: 100%;
-  border-radius: 3px;
-  background: linear-gradient(90deg, var(--rose), var(--lav));
-  transition: width 1s linear;
-}
-
-/* passed badge */
-.passed-badge {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--sage-l);
-  border: 1px solid rgba(94,158,116,0.3);
-  border-radius: var(--radius-sm);
-  padding: 12px 16px;
-  margin: 0 14px 12px;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--sage);
-}
-
-/* ─── Science Advice ─── */
-.advice-card {
-  background: var(--gold-ll);
-  border: 1px solid rgba(196,145,58,0.2);
-  border-radius: var(--radius);
-  margin: 0 14px 12px;
-  padding: 18px 20px;
-  position: relative;
-  overflow: hidden;
-}
-
-.advice-card::after {
-  content: '🔬';
-  position: absolute;
-  top: 10px;
-  right: 14px;
-  font-size: 32px;
-  opacity: 0.15;
-}
-
-.adv-label {
-  font-size: 9px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--gold);
-  margin-bottom: 7px;
-}
-
-.adv-text {
-  font-size: 13px;
-  color: var(--text-2);
-  line-height: 1.65;
-  font-weight: 400;
-}
-
-.adv-text strong { color: var(--text-1); font-weight: 700; }
-
-.adv-pill {
-  display: inline-block;
-  margin-top: 10px;
-  padding: 4px 10px;
-  background: rgba(184,124,54,0.12);
-  border: 1px solid rgba(184,124,54,0.25);
-  border-radius: 20px;
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--gold);
-  letter-spacing: 0.3px;
-}
-
-/* ─── Reset button ─── */
-.new-calc-btn {
-  display: block;
-  width: calc(100% - 28px);
-  margin: 0 14px 20px;
-  padding: 14px;
-  background: transparent;
-  color: var(--text-3);
-  border: 2px solid var(--rose-l);
-  border-radius: var(--radius);
-  font-family: var(--font-body);
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.new-calc-btn:active {
-  background: var(--rose-ll);
-}
-
-/* ─── False Start Warning ─── */
-.false-start-warning {
-  background: #FFF4E5;
-  border: 1.5px solid #FFD699;
-  border-radius: var(--radius-sm);
-  margin: 0 14px 12px;
-  padding: 14px 16px;
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-  animation: slideIn 0.4s cubic-bezier(0.34, 1.3, 0.64, 1);
-}
-
-@keyframes slideIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.fs-icon {
-  font-size: 24px;
-  flex-shrink: 0;
-  line-height: 1;
-}
-
-.fs-content { flex: 1; }
-
-.fs-title {
-  font-size: 12px;
-  font-weight: 700;
-  color: #B87C36;
-  margin-bottom: 4px;
-  letter-spacing: 0.3px;
-}
-
-.fs-text {
-  font-size: 12px;
-  color: var(--text-2);
-  line-height: 1.6;
-  font-weight: 500;
-}
-
-.fs-text strong {
-  color: var(--text-1);
-  font-weight: 700;
-}
-
-/* ─── Flexibility Note ─── */
-.flex-note {
-  background: var(--lav-ll);
-  border: 1px solid var(--lav-l);
-  border-radius: var(--radius-sm);
-  margin: 0 14px 16px;
-  padding: 10px 14px;
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  font-size: 12px;
-  color: var(--text-2);
-  line-height: 1.5;
-  font-weight: 500;
-}
-
-.flex-icon {
-  font-size: 18px;
-  flex-shrink: 0;
-}
-
-/* ═══════════════════════════════════════════════════════
-   SLEEP JOURNAL
-═══════════════════════════════════════════════════════ */
-.journal-section {
-  padding: 0 0 4px;
-}
-
-.journal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin: 0 14px 10px;
-}
-
-.journal-title {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-}
-
-.journal-title h2 {
-  font-family: var(--font-display);
-  font-size: 20px;
-  font-weight: 300;
-  font-style: italic;
-  color: var(--text-1);
-}
-
-.journal-count {
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--text-3);
-  background: var(--bg-card-hard);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 2px 7px;
-}
-
-.journal-clear-btn {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--rose);
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  font-family: var(--font-body);
-  padding: 4px 0;
-  opacity: 0.75;
-  transition: opacity 0.2s;
-}
-
-.journal-clear-btn:active { opacity: 1; }
-
-.journal-empty {
-  text-align: center;
-  padding: 28px 20px;
-  color: var(--text-3);
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 1.7;
-}
-
-.journal-empty .empty-icon {
-  font-size: 36px;
-  display: block;
-  margin-bottom: 8px;
-  opacity: 0.4;
-}
-
-/* Journal list */
-.journal-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin: 0 14px;
-}
-
-.journal-entry {
-  background: var(--bg-card);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255,255,255,0.75);
-  border-radius: var(--radius-sm);
-  padding: 13px 14px;
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  box-shadow: var(--shadow-xs);
-  animation: entrySlideIn 0.3s cubic-bezier(0.34, 1.4, 0.64, 1) both;
-}
-
-@keyframes entrySlideIn {
-  from { opacity: 0; transform: translateX(-12px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-
-.entry-left {
-  flex: 1;
-  min-width: 0;
-}
-
-.entry-date {
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--text-3);
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-  margin-bottom: 5px;
-}
-
-.entry-row {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.entry-time-big {
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--text-1);
-  letter-spacing: -0.5px;
-  font-variant-numeric: tabular-nums;
-}
-
-.entry-arrow {
-  font-size: 12px;
-  color: var(--text-3);
-}
-
-.entry-chips {
-  display: flex;
-  gap: 5px;
-  margin-top: 5px;
-  flex-wrap: wrap;
-}
-
-.entry-chip {
-  font-size: 10px;
-  font-weight: 600;
-  padding: 2px 7px;
-  border-radius: 8px;
-  letter-spacing: 0.2px;
-}
+.journal-entry { background: #FFF; border-radius: 15px; padding: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+.entry-time { font-size: 18px; font-weight: 700; }
+.entry-details { font-size: 10px; color: var(--text-3); font-weight: 600; }
+.del-btn { border: none; background: #FDF2F3; color: var(--rose); width: 26px; height: 26px; border-radius: 50%; font-weight: 800; cursor: pointer; }
 
-.entry-chip.nap  { background: var(--lav-l);   color: var(--lav); }
-.entry-chip.age  { background: var(--rose-ll); color: var(--rose); }
-.entry-chip.ww   { background: var(--sage-ll); color: var(--sage); }
-
-.entry-delete {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--bg-card-hard);
-  border: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  color: var(--text-3);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.entry-delete:active {
-  background: #FDE8E8;
-  border-color: var(--rose-l);
-  color: var(--rose);
-}
-
-/* ═══════════════════════════════════════════════════════
-   FOOTER
-═══════════════════════════════════════════════════════ */
-.footer {
-  text-align: center;
-  padding: 24px 28px 32px;
-  font-size: 11px;
-  color: var(--text-3);
-  line-height: 1.7;
-}
-
-.footer strong { color: var(--text-2); }
-
-/* ═══════════════════════════════════════════════════════
-   UTILS
-═══════════════════════════════════════════════════════ */
-.hidden { display: none !important; }
-
-@keyframes fadeIn {
-  from { opacity: 0; } to { opacity: 1; }
-}
+.footer { text-align: center; padding: 24px 28px 32px; font-size: 11px; color: var(--text-3); line-height: 1.7; }
 </style>
 </head>
-
 <body>
 <div class="app">
-
-  <!-- ════════════════════ HEADER ════════════════════ -->
   <div class="header">
     <div class="header-left">
       <div class="header-icon">🌙</div>
       <h1 data-i18n-html="title">Prozor <em>Budnosti</em></h1>
-      <p class="header-sub" data-i18n="subtitle">Dva procesa sna · Borbély 1982 · Adenozinski model</p>
+      <p class="header-sub">Borbély, A. A. (1982). A two process model of sleep regulation. <em>Human Neurobiology</em>, 1(3).</p>
     </div>
-
     <div class="lang-toggle">
       <button class="lang-btn active" id="btnHR" onclick="setLang('hr')">HR</button>
       <button class="lang-btn" id="btnEN" onclick="setLang('en')">EN</button>
     </div>
   </div>
 
-  <!-- ════════════════════ AGE SELECTOR ════════════════════ -->
   <div class="card">
-    <div class="card-label" data-i18n="labelAge">Starost djeteta (mjeseci)</div>
+    <label class="card-label" data-i18n="labelAge">Starost djeteta (mjeseci)</label>
     <div class="age-grid" id="ageGrid"></div>
     <div class="ww-hint" id="wwHint"></div>
   </div>
 
-  <!-- ════════════════════ WAKE TIME ════════════════════ -->
   <div class="card">
     <div class="time-field">
-      <div class="time-icon-box">⏰</div>
-      <div class="time-input-wrap">
-        <label data-i18n="labelWakeTime">Beba se probudila u</label>
-        <input type="time" id="wakeTime" value="09:00" onchange="saveLastState()">
+      <div class="time-icon">⏰</div>
+      <div style="flex:1">
+        <label class="card-label" style="margin:0; font-size:9px" data-i18n="labelWake">Beba se probudila u</label>
+        <input type="time" id="wakeTime" required lang="en-GB" onchange="save()">
       </div>
     </div>
   </div>
 
-  <!-- ════════════════════ NAP SLIDER ════════════════════ -->
   <div class="card">
-    <div class="card-label" data-i18n="labelNap">Trajanje prethodnog sna</div>
     <div class="nap-header">
-      <div>
-        <span class="nap-value-display" id="napValDisplay">45<sup data-i18n="min">min</sup></span>
-      </div>
-      <span class="nap-category-pill good" id="napPill">✓ Dobar san</span>
+      <div class="nap-val" id="napVal">45<sup>min</sup></div>
+      <span class="nap-pill good" id="napPill">✓ Dobar san</span>
     </div>
-    <div class="slider-track-wrap">
-      <input type="range" id="napSlider" min="1" max="120" value="45" step="1" oninput="onSlider(this)">
-      <div class="slider-labels">
-        <span>1 min</span>
-        <span>30</span>
-        <span>45</span>
-        <span>60</span>
-        <span>90</span>
-        <span>2h</span>
-      </div>
-    </div>
-    <div class="slider-zones">
-      <div class="zone-chip z1" title="Micro-nap"></div>
-      <div class="zone-chip z1" style="flex:0.5"></div>
-      <div class="zone-chip z2" style="flex:1.3"></div>
-      <div class="zone-chip z3" style="flex:4.2"></div>
+    <input type="range" id="napSlider" min="1" max="120" value="45" oninput="onSlide(this)">
+    <div class="slider-labels" style="display:flex; justify-content:space-between; font-size:9px; color:#B0A8A4; margin-top:5px">
+      <span>1m</span><span>30</span><span>45</span><span>60</span><span>90</span><span>2h</span>
     </div>
   </div>
 
-  <!-- ════════════════════ CALCULATE ════════════════════ -->
-  <button class="calc-btn" onclick="calculate()">
-    <span class="calc-btn-icon">✦</span>
-    <span data-i18n="btnCalc">Izračunaj Prozor Spavanja</span>
-  </button>
+  <button class="calc-btn" onclick="calc()" data-i18n="btnCalc">Izračunaj Prozor Spavanja</button>
 
-  <!-- ════════════════════ RESULTS ════════════════════ -->
-  <div class="results" id="results">
-
-    <div class="section-divider">
-      <span data-i18n="sectionResult">Rezultat</span>
-    </div>
-
-    <!-- Time cards -->
-    <div class="result-grid">
-      <div class="result-card r-target" data-emoji="🎯">
-        <div class="rc-label" data-i18n="rcTarget">Idealno spavanje u</div>
-        <div class="rc-time" id="rcTargetTime">–</div>
-        <div class="rc-sub" id="rcTargetWW"></div>
+  <div class="results" id="res">
+    <div class="res-grid">
+      <div class="res-card target">
+        <label data-i18n="rcTarget">Idealno u</label>
+        <div class="time" id="tTime">--:--</div>
       </div>
-      <div class="result-card r-reset" data-emoji="🌿">
-        <div class="rc-label" data-i18n="rcReset">Low-Stim Reset od</div>
-        <div class="rc-time" id="rcResetTime">–</div>
-        <div class="rc-sub" id="rcResetSub"></div>
+      <div class="res-card reset">
+        <label data-i18n="rcReset">Reset od</label>
+        <div class="time" id="rTime">--:--</div>
       </div>
     </div>
-
-    <!-- Countdown -->
-    <div class="countdown-wrap" id="countdownWrap">
-      <div class="countdown-card" id="countdownCard">
-        <div class="cd-top">
-          <div class="cd-label" data-i18n="cdLabel">Do spavanja ostalo</div>
-          <div class="cd-phase" id="cdPhase">⏳ Gradi se adenozin</div>
-        </div>
-        <div class="cd-main">
-          <span class="cd-emoji" id="cdEmoji">⏳</span>
-          <div class="cd-time" id="cdTime">00:00</div>
-        </div>
-        <div class="cd-progress"><div class="cd-bar" id="cdBar" style="width:0%"></div></div>
-      </div>
+    <div class="countdown-card" id="cdCard">
+      <div class="cd-phase" id="cdP">⏳ GRADI SE ADENOZIN</div>
+      <div class="cd-time" id="cdT">00:00</div>
     </div>
-
-    <!-- Passed -->
-    <div class="passed-badge hidden" id="passedBadge">
-      <span>✅</span>
-      <span data-i18n="passedMsg">Prozor je prošao · Idite spavati sada!</span>
-    </div>
-
-    <!-- Advice -->
-    <div class="advice-card">
-      <div class="adv-label" data-i18n="advLabel">Zašto baš ovaj trenutak?</div>
-      <div class="adv-text" id="advText"></div>
-      <span class="adv-pill" id="advPill"></span>
-    </div>
-
-    <!-- False Start Warning (conditionally shown) -->
-    <div class="false-start-warning hidden" id="falseStartWarning">
-      <div class="fs-icon">⚠️</div>
-      <div class="fs-content">
-        <div class="fs-title" data-i18n="falseStartTitle">⚠️ False Start upozorenje</div>
-        <div class="fs-text">
-          <span data-i18n-html="falseStartMsg">Ako se beba probudi unutar 10-15 min...</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Flexibility Note -->
-    <div class="flex-note">
-      <span class="flex-icon">💡</span>
-      <span data-i18n="flexNote">Odstupanje od +/- 5-10 minuta je normalno i djelotvorno; pratite bebine signale.</span>
-    </div>
-
-    <!-- Reset -->
-    <button class="new-calc-btn" onclick="resetCalc()" data-i18n="btnReset">↩ Novi izračun</button>
-
-  </div><!-- /results -->
-
-  <!-- ════════════════════ JOURNAL ════════════════════ -->
-  <div class="section-divider">
-    <span data-i18n="sectionJournal">Dnevnik spavanja</span>
+    <div class="advice-card"><div class="adv-text" id="adv"></div></div>
+    <button class="new-btn" onclick="resetUI()" data-i18n="btnNew">↩ Novi izračun</button>
   </div>
 
-  <div class="journal-section">
-    <div class="journal-header">
-      <div class="journal-title">
-        <span>📖</span>
-        <h2 data-i18n="journalTitle">Evidencija</h2>
-        <span class="journal-count" id="journalCount">0</span>
-      </div>
-      <button class="journal-clear-btn" onclick="clearJournal()" data-i18n="journalClear">Obriši sve</button>
-    </div>
-
-    <div id="journalEmpty" class="journal-empty">
-      <span class="empty-icon">🗒️</span>
-      <span data-i18n="journalEmpty">Još nema unosa.<br>Izračunaj prozor spavanja i<br>on će biti automatski spremljen.</span>
-    </div>
-
-    <div class="journal-list" id="journalList"></div>
+  <div class="journal-section" id="jSection">
+    <div class="section-divider" data-i18n="secJournal">Dnevnik spavanja</div>
+    <select id="jDateSelect" class="date-select" onchange="renderJList()"></select>
+    <div id="jList"></div>
   </div>
 
   <div class="footer">
     <strong data-i18n="footerModel">Model dva procesa (Borbély, 1982)</strong><br>
-    <span data-i18n="footerSci">Proces S · Adenozinski prag · Kortizolski vrh · Homeostaza sna</span><br><br>
-    <em data-i18n="footerDiscl">Ovo nije medicinski savjet. Konzultirajte pedijatra.</em>
+    <em data-i18n="footerDiscl">Ovo nije medicinski savjet.</em>
   </div>
-
-</div><!-- /app -->
+</div>
 
 <script>
-/* ═══════════════════════════════════════════════════════
-   TRANSLATIONS
-═══════════════════════════════════════════════════════ */
-const LANG = {
+const WW = {3:{min:75,max:105},4:{min:90,max:120},5:{min:105,max:135},6:{min:120,max:165},7:{min:150,max:195},8:{min:150,max:210},9:{min:180,max:225},10:{min:180,max:240},11:{min:195,max:240},12:{min:195,max:240}};
+const L = {
   hr: {
-    badge: 'Kalkulator spavanja · v2.0',
-    title: 'Prozor <em>Budnosti</em>',
-    subtitle: 'Dva procesa sna · Borbély 1982 · Adenozinski model',
-    labelAge: 'Starost djeteta (mjeseci)',
-    labelWakeTime: 'Beba se probudila u',
-    labelNap: 'Trajanje prethodnog sna',
-    min: 'min',
-    btnCalc: 'Izračunaj Prozor Spavanja',
-    sectionResult: 'Rezultat',
-    rcTarget: 'Idealno spavanje u',
-    rcReset: 'Low-Stim Reset od',
-    cdLabel: 'Do spavanja ostalo',
-    passedMsg: 'Prozor je prošao · Idite spavati sada!',
-    advLabel: 'Zašto baš ovaj trenutak?',
-    btnReset: '↩ Novi izračun',
-    sectionJournal: 'Dnevnik spavanja',
-    journalTitle: 'Evidencija',
-    journalClear: 'Obriši sve',
-    journalEmpty: 'Još nema unosa.<br>Izračunaj prozor spavanja i<br>on će biti automatski spremljen.',
-    footerModel: 'Model dva procesa (Borbély, 1982)',
-    footerSci: 'Proces S · Adenozinski prag · Kortizolski vrh · Homeostaza sna',
-    footerDiscl: 'Ovo nije medicinski savjet. Konzultirajte pedijatra.',
-    napMicro: '⚡ Mikro-san',
-    napShort: '⚠ Kratki san',
-    napGood: '✓ Dobar san',
-    ageUnit: 'mj.',
-    wwRange: 'Prozor: %MIN – %MAX',
-    wwBase: 'Baza: %MIN – %MAX · Kazneni faktor: -%PCT%',
-    rcSubTarget: 'Optimalni adenozinski prag',
-    rcSubReset: 'Počni 15 min prije (postupno uspavljivanje)',
-    cdPhases: {
-      safe: '🌱 Gradi se adenozin',
-      reset: '🌿 Počni Low-Stim Reset',
-      soon: '🌙 Skoro je vrijeme',
-      now:  '🔴 Idealan trenutak!',
-    },
-    passedMsg: '✅ Prozor je prošao · Idite spavati odmah!',
-    advLabelTxt: 'Zašto baš ovaj trenutak?',
-    advMicro: `Beba je imala <strong>mikro-san</strong> (< 30 min) — nakupila je manje adenozina nego pri punom ciklusu. Prozor budnosti je skraćen za <strong>%PCT%</strong> kako bismo spriječili <strong>kortizolski vrh</strong>. Premoreni mozak luči stres-hormone koji paradoksalno otežavaju spavanje. Adenozinski prag mora biti dosegnut, ali ne prekoračen.`,
-    advShort: `San od <strong>30–45 min</strong> odgovara jednom REM ciklusu — adenozin je djelomično resetiran. Smanjujemo prozor za <strong>10%</strong> kako bismo uhvatili optimalni <em>adenozinski prag</em>: točku u kojoj Proces S (pritisak sna) dostiže kritičnu razinu bez aktivacije kortizola.`,
-    advGood: `Beba je spavala <strong>dovoljno (> 45 min)</strong> — adenozin je dobro resetiran. Koristimo <strong>puni bazni prozor</strong> za ovu dob. Prerano nametanje sna = otpor i plakanje. Prekasno = kortizolski vrh i pretjerani umor. Ovaj trenutak je <em>biološki optimum</em>.`,
-    advPillMicro: '⚡ Adenozin gradi · Kratki WW',
-    advPillShort: '⚠ Parcijalni san · Srednji WW',
-    advPillGood: '✓ Optimalni prozor · Puni WW',
-    flexNote: 'Odstupanje od +/- 5-10 minuta je normalno i djelotvorno; pratite bebine signale.',
-    falseStartTitle: '⚠️ False Start upozorenje',
-    falseStartMsg: 'Ako se beba probudi unutar 10-15 min, mogući je <strong>"False Start"</strong> (prerani pokušaj). Idući put pokušajte produžiti budnost za 5-10 min kako biste pojačali pritisak sna (adenozin).',
-    entryDateFmt: (d) => d.toLocaleDateString('hr-HR', { day:'2-digit', month:'2-digit', year:'2-digit' }),
-    entryAge: (a) => `${a} mj.`,
-    entryNap: (n) => `${n} min sna`,
-    entryWW: (w) => `WW ${w}`,
-    deleteTitle: 'Obriši unos',
-    journalSaved: 'Saved to journal',
+    title: 'Prozor <em>Budnosti</em>', labelAge: 'Starost (mjeseci)', labelWake: 'Beba se probudila u', btnCalc: 'Izračunaj Prozor Spavanja', rcTarget: 'Idealno spavanje u', rcReset: 'Postupno uspavljivanje u', secJournal: 'Dnevnik spavanja', btnNew: '↩ Novi izračun', ageU: 'mj.',
+    phases: {s:'🌱 Adenozin raste', r:'🌿 Low-Stim Reset', n:'🔴 Savršeno vrijeme'},
+    adv0: '<strong>Lažni san (<10m)</strong>. Adenozin nije očišćen. Pritisak sna ostaje na maksimumu. Pokušajte ponovno uspavati bebu za 20 minuta.',
+    adv1: 'Beba je imala <strong>mikro-san (< 30 min)</strong> — nakupila je manje adenozina nego pri punom ciklusu. Prozor budnosti je skraćen za <strong>%P%</strong> kako bismo spriječili <strong>kortizolski vrh</strong>. Premoreni mozak luči stres-hormone koji otežavaju spavanje.',
+    adv2: 'San od <strong>30–45 min</strong> odgovara jednom REM ciklusu — adenozin je djelomično resetiran. Smanjujemo prozor za <strong>10%</strong> kako bismo uhvatili optimalni adenozinski prag bez aktivacije kortizola.',
+    adv3: 'Beba je spavala <strong>dovoljno (> 45 min)</strong> — adenozin je dobro resetiran. Koristimo <strong>puni bazni prozor</strong> za ovu dob. Prerano nametanje sna = otpor i plakanje. Prekasno = kortizolski vrh i pretjerani umor.'
   },
   en: {
-    badge: 'Sleep Calculator · v2.0',
-    title: 'Wake <em>Window</em>',
-    subtitle: 'Two-Process Sleep Model · Borbély 1982 · Adenosine Engine',
-    labelAge: 'Baby\'s Age (months)',
-    labelWakeTime: 'Baby woke up at',
-    labelNap: 'Previous sleep duration',
-    min: 'min',
-    btnCalc: 'Calculate Sleep Window',
-    sectionResult: 'Result',
-    rcTarget: 'Ideal sleep time',
-    rcReset: 'Low-Stim Reset from',
-    cdLabel: 'Time to sleep',
-    passedMsg: '✅ Window passed · Put baby down now!',
-    advLabel: 'Why this exact moment?',
-    btnReset: '↩ New Calculation',
-    sectionJournal: 'Sleep Journal',
-    journalTitle: 'Log',
-    journalClear: 'Clear all',
-    journalEmpty: 'No entries yet.<br>Calculate a sleep window and<br>it will be saved automatically.',
-    footerModel: 'Two-Process Model (Borbély, 1982)',
-    footerSci: 'Process S · Adenosine Threshold · Cortisol Spike · Sleep Homeostasis',
-    footerDiscl: 'This is not medical advice. Consult your pediatrician.',
-    napMicro: '⚡ Micro-nap',
-    napShort: '⚠ Short nap',
-    napGood: '✓ Good nap',
-    ageUnit: 'mo.',
-    wwRange: 'Window: %MIN – %MAX',
-    wwBase: 'Base: %MIN – %MAX · Penalty: -%PCT%',
-    rcSubTarget: 'Optimal adenosine threshold',
-    rcSubReset: 'Start 15 min before (gradual settling)',
-    cdPhases: {
-      safe: '🌱 Building adenosine',
-      reset: '🌿 Start Low-Stim Reset',
-      soon: '🌙 Almost time',
-      now:  '🔴 Perfect moment!',
-    },
-    advLabelTxt: 'Why this exact moment?',
-    advMicro: `Baby had a <strong>micro-nap</strong> (< 30 min) — less adenosine was cleared than during a full sleep cycle. We shorten the wake window by <strong>%PCT%</strong> to prevent a <strong>cortisol spike</strong>. An overtired brain releases stress hormones that paradoxically make falling asleep harder. The adenosine threshold must be reached — but not exceeded.`,
-    advShort: `A <strong>30–45 min</strong> nap equals roughly one REM cycle — adenosine was partially reset. We reduce the window by <strong>10%</strong> to hit the optimal <em>adenosine threshold</em>: the point where Process S (sleep pressure) reaches critical mass without triggering cortisol.`,
-    advGood: `Baby slept <strong>enough (> 45 min)</strong> — adenosine was solidly reset. We use the <strong>full base window</strong> for this age. Too early = resistance and crying. Too late = cortisol spike and overtired fight. This moment is the <em>biological optimum</em>.`,
-    advPillMicro: '⚡ Adenosine loading · Short WW',
-    advPillShort: '⚠ Partial reset · Moderate WW',
-    advPillGood: '✓ Optimal window · Full WW',
-    flexNote: 'Deviation of +/- 5-10 minutes is normal and effective; follow your baby\'s cues.',
-    falseStartTitle: '⚠️ False Start Warning',
-    falseStartMsg: 'If baby wakes within 10-15 min, this may be a <strong>"False Start"</strong> (premature attempt). Next time, try extending wake time by 5-10 min to increase sleep pressure (adenosine).',
-    entryDateFmt: (d) => d.toLocaleDateString('en-GB', { day:'2-digit', month:'2-digit', year:'2-digit' }),
-    entryAge: (a) => `${a} mo.`,
-    entryNap: (n) => `${n} min nap`,
-    entryWW: (w) => `WW ${w}`,
-    deleteTitle: 'Delete entry',
-    journalSaved: 'Saved to journal',
+    title: 'Wake <em>Window</em>', labelAge: 'Baby\'s Age (mo.)', labelWake: 'Baby woke up at', btnCalc: 'Calculate Window', rcTarget: 'Ideal sleep time', rcReset: 'Start soothing from', secJournal: 'Sleep Journal', btnNew: '↩ New Calculation', ageU: 'mo.',
+    phases: {s:'🌱 Building adenosine', r:'🌿 Low-Stim Reset', n:'🔴 Perfect moment'},
+    adv0: '<strong>False start (<10m)</strong>. Adenosine was not cleared. Sleep pressure remains high. Attempt again in 20 min.',
+    adv1: 'Baby had a <strong>micro-nap (< 30 min)</strong> — less adenosine cleared. Window shortened by <strong>%P%</strong> to prevent a <strong>cortisol spike</strong>. Overtired brain releases stress hormones.',
+    adv2: 'A <strong>30–45 min</strong> nap equals one REM cycle — partial reset. We reduce window by <strong>10%</strong> to hit the optimal threshold without triggering cortisol.',
+    adv3: 'Baby slept <strong>enough (> 45 min)</strong> — adenosine was well reset. We use the <strong>full base window</strong> for this age. Too early = resistance. Too late = cortisol fight.'
   }
 };
+let cur = 'hr', sel = 3, interval = null;
 
-/* ═══════════════════════════════════════════════════════
-   WAKE WINDOW DATA
-═══════════════════════════════════════════════════════ */
-const WW_DATA = {
-  3:  { min: 75,  max: 105 },
-  4:  { min: 90,  max: 120 },
-  5:  { min: 105, max: 135 },
-  6:  { min: 120, max: 165 },
-  7:  { min: 150, max: 180 },
-  8:  { min: 150, max: 180 },
-  9:  { min: 150, max: 180 },
-  10: { min: 195, max: 240 },
-  11: { min: 195, max: 240 },
-  12: { min: 195, max: 240 },
-};
-
-/* ═══════════════════════════════════════════════════════
-   NAP ADJUSTMENT LOGIC (Adenosine-based)
-   
-   Granular micro-nap calibration:
-   - < 15 min:    -10% (minimal adenosine clearance)
-   - 15-30 min:   -20% (partial reset, need shorter WW)
-   - 31-45 min:   -10% (transition zone, one REM cycle)
-   - > 45 min:    100% (full base WW, solid adenosine reset)
-═══════════════════════════════════════════════════════ */
-function getNapAdjustmentFactor(napMin) {
-  if (napMin < 15)        return 0.90;  // -10%
-  if (napMin <= 30)       return 0.80;  // -20%
-  if (napMin <= 45)       return 0.90;  // -10%
-  return 1.00;  // 100% - full base WW
+function setLang(l) {
+  cur = l; localStorage.setItem('lang', l);
+  document.getElementById('btnHR').classList.toggle('active', l==='hr');
+  document.getElementById('btnEN').classList.toggle('active', l==='en');
+  document.querySelectorAll('[data-i18n]').forEach(e => e.textContent = L[l][e.dataset.i18n]);
+  document.querySelectorAll('[data-i18n-html]').forEach(e => e.innerHTML = L[l][e.dataset.i18nHtml]);
+  renderGrid(); renderJ();
 }
 
-/* ═══════════════════════════════════════════════════════
-   STATE
-═══════════════════════════════════════════════════════ */
-let currentLang = 'hr';
-let selectedAge = 3;
-let countdownInterval = null;
-let cdTotalSecs = 0;
-let cdStartSecs = 0;
-let lastCalcTime = null;  // For False Start detection
-
-// Storage keys
-const STORAGE_KEYS = {
-  journal: 'babySleepJournal_v2',
-  lastState: 'babySleepLastState_v2',
-  lang: 'babySleepLang_v2'
-};
-
-/* ═══════════════════════════════════════════════════════
-   I18N ENGINE
-═══════════════════════════════════════════════════════ */
-function t(key) {
-  return LANG[currentLang][key] || LANG['hr'][key] || key;
-}
-
-function setLang(lang) {
-  currentLang = lang;
-  localStorage.setItem(STORAGE_KEYS.lang, lang);
-  document.documentElement.lang = lang;
-  document.getElementById('btnHR').classList.toggle('active', lang === 'hr');
-  document.getElementById('btnEN').classList.toggle('active', lang === 'en');
-  applyTranslations();
-  renderAgeGrid();
-  updateWWHint();
-  onSlider(document.getElementById('napSlider'));
-  renderJournal();
-}
-
-function applyTranslations() {
-  const L = LANG[currentLang];
-
-  // Text nodes
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    if (L[key] !== undefined) el.textContent = L[key];
-  });
-
-  // HTML nodes (for <em> in title, <strong> in messages)
-  document.querySelectorAll('[data-i18n-html]').forEach(el => {
-    const key = el.getAttribute('data-i18n-html');
-    if (L[key] !== undefined) el.innerHTML = L[key];
-  });
-
-  // Journal empty text
-  const je = document.getElementById('journalEmpty').querySelector('[data-i18n="journalEmpty"]');
-  if (je) je.innerHTML = L['journalEmpty'];
-}
-
-/* ═══════════════════════════════════════════════════════
-   AGE GRID
-═══════════════════════════════════════════════════════ */
-function renderAgeGrid() {
-  const grid = document.getElementById('ageGrid');
-  grid.innerHTML = '';
-  for (let age = 3; age <= 12; age++) {
-    const btn = document.createElement('button');
-    btn.className = 'age-btn' + (age === selectedAge ? ' active' : '');
-    btn.dataset.age = age;
-    btn.innerHTML = `<span class="num">${age}</span><span class="unit">${t('ageUnit')}</span>`;
-    btn.onclick = () => selectAge(age);
-    grid.appendChild(btn);
+function renderGrid() {
+  const g = document.getElementById('ageGrid'); g.innerHTML = '';
+  for(let i=3; i<=12; i++) {
+    const b = document.createElement('button'); b.className = 'age-btn'+(i===sel?' active':'');
+    b.innerHTML = `<span class="num">${i}</span><span class="unit">${L[cur].ageU}</span>`;
+    b.onclick = () => { sel=i; renderGrid(); updHint(); save(); };
+    g.appendChild(b);
   }
+  updHint();
 }
 
-function selectAge(age) {
-  selectedAge = age;
-  document.querySelectorAll('.age-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector(`[data-age="${age}"]`).classList.add('active');
-  updateWWHint();
+function updHint() { document.getElementById('wwHint').textContent = `${L[cur].labelAge}: ${WW[sel].min}-${WW[sel].max}m`; }
+
+function onSlide(el) {
+  const v = el.value; document.getElementById('napVal').innerHTML = `${v}<sup>min</sup>`;
+  const p = document.getElementById('napPill');
+  p.className = 'nap-pill ' + (v<30?'micro':'good');
+  p.textContent = v<10?'🚫 False Start' : (v<30?(cur==='hr'?'⚡ Mikro-san':'⚡ Micro-nap'):(cur==='hr'?'✓ Dobar san':'✓ Good nap'));
+}
+
+function calc() {
+  const w = document.getElementById('wakeTime').value; if(!w) return;
+  const n = parseInt(document.getElementById('napSlider').value);
+  let factor = n<10?0:(n<=20?0.5:(n<=30?0.8:(n<=45?0.9:1)));
+  const [h, m] = w.split(':').map(Number);
+  const wakeD = new Date(); wakeD.setHours(h, m, 0); if(wakeD > new Date()) wakeD.setDate(wakeD.getDate()-1);
   
-  // Auto-save state
-  if (document.getElementById('wakeTime').value) {
-    saveLastState();
+  let target, resetT, adv;
+  if(factor === 0) { target = new Date(wakeD.getTime() + 20*60000); adv = L[cur].adv0; }
+  else {
+    let ww = Math.round(((WW[sel].min + WW[sel].max)/2)*factor);
+    if(sel===3 && n<30) ww = 60;
+    target = new Date(wakeD.getTime() + ww*60000);
+    adv = n<30?L[cur].adv1.replace('%P%', factor===0.5?'50%':'20%') : (n<=45?L[cur].adv2:L[cur].adv3);
   }
+  resetT = new Date(target.getTime() - 15*60000);
+  document.getElementById('tTime').textContent = fmt(target);
+  document.getElementById('rTime').textContent = fmt(resetT);
+  document.getElementById('adv').innerHTML = adv;
+  document.getElementById('res').classList.add('visible');
+  startCd(target, resetT);
+  saveJ({id:Date.now(), ts:Date.now(), w, t:fmt(target), age:sel, nap:n});
 }
 
-function updateWWHint() {
-  const d = WW_DATA[selectedAge];
-  const hint = document.getElementById('wwHint');
-  const tpl = t('wwRange');
-  hint.textContent = tpl
-    .replace('%MIN', fmtMin(d.min))
-    .replace('%MAX', fmtMin(d.max));
-}
-
-/* ═══════════════════════════════════════════════════════
-   SLIDER
-═══════════════════════════════════════════════════════ */
-function onSlider(el) {
-  const val = parseInt(el.value);
-  const pct = ((val - 1) / 119) * 100;
-  el.style.setProperty('--fill', pct + '%');
-
-  document.getElementById('napValDisplay').innerHTML =
-    `${val}<sup>${t('min')}</sup>`;
-
-  const pill = document.getElementById('napPill');
-  if (val < 30) {
-    pill.className = 'nap-category-pill micro';
-    pill.textContent = t('napMicro');
-  } else if (val <= 45) {
-    pill.className = 'nap-category-pill short';
-    pill.textContent = t('napShort');
-  } else {
-    pill.className = 'nap-category-pill good';
-    pill.textContent = t('napGood');
-  }
-  
-  // Auto-save state on slider change
-  if (document.getElementById('wakeTime').value) {
-    saveLastState();
-  }
-}
-
-/* ═══════════════════════════════════════════════════════
-   CORE CALCULATION
-═══════════════════════════════════════════════════════ */
-function calculate() {
-  const wakeVal = document.getElementById('wakeTime').value;
-  if (!wakeVal) return;
-
-  const napMin = parseInt(document.getElementById('napSlider').value);
-  const base   = WW_DATA[selectedAge];
-
-  // Use new granular nap adjustment logic
-  const factor = getNapAdjustmentFactor(napMin);
-
-  let wwMin = Math.round(base.min * factor);
-  let wwMax = Math.round(base.max * factor);
-
-  // Special rule: 3mo micronap floor
-  if (selectedAge === 3 && napMin < 30) {
-    wwMin = Math.max(wwMin, 55);
-    wwMax = Math.max(wwMax, 65);
-  }
-
-  const wwTarget = Math.round((wwMin + wwMax) / 2);
-
-  // Parse wake time → build Date objects
-  const [wh, wm] = wakeVal.split(':').map(Number);
-  const wakeDate   = new Date();
-  wakeDate.setHours(wh, wm, 0, 0);
-
-  // If wake time is in the future, assume yesterday
-  if (wakeDate > new Date()) {
-    wakeDate.setDate(wakeDate.getDate() - 1);
-  }
-
-  const targetDate = new Date(wakeDate.getTime() + wwTarget * 60000);
-  const resetDate  = new Date(targetDate.getTime() - 15 * 60000);
-
-  // Populate UI
-  document.getElementById('rcTargetTime').textContent = fmt(targetDate);
-  document.getElementById('rcResetTime').textContent  = fmt(resetDate);
-  document.getElementById('rcTargetWW').textContent   = t('rcSubTarget');
-  document.getElementById('rcResetSub').textContent   = t('rcSubReset');
-
-  // Advice
-  renderAdvice(napMin, factor);
-
-  // False Start detection
-  checkFalseStart();
-
-  // Show results
-  const results = document.getElementById('results');
-  results.classList.add('visible');
-  setTimeout(() => results.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
-
-  // Countdown
-  startCountdown(targetDate, wakeDate);
-
-  // Save to journal
-  saveJournalEntry({
-    id: Date.now(),
-    ts: Date.now(),
-    wakeTime: wakeVal,
-    napMin,
-    age: selectedAge,
-    targetTime: fmt(targetDate),
-    wwRange: `${fmtMin(wwMin)}–${fmtMin(wwMax)}`,
-    napCategory: getNapCategory(napMin), // For Smart Learning prep
-  });
-
-  // Save last state for persistence
-  saveLastState();
-
-  // Update lastCalcTime for False Start tracking
-  lastCalcTime = Date.now();
-}
-
-/* ═══════════════════════════════════════════════════════
-   ADVICE
-═══════════════════════════════════════════════════════ */
-function renderAdvice(napMin, factor) {
-  const pctReduction = Math.round((1 - factor) * 100);
-  const pctStr = pctReduction > 0 ? `${pctReduction}%` : '0%';
-  let tmpl, pill;
-
-  if (napMin < 15) {
-    tmpl = t('advMicro').replace('%PCT%', '10%');
-    pill = t('advPillMicro');
-  } else if (napMin < 30) {
-    tmpl = t('advMicro').replace('%PCT%', '20%');
-    pill = t('advPillMicro');
-  } else if (napMin <= 45) {
-    tmpl = t('advShort');
-    pill = t('advPillShort');
-  } else {
-    tmpl = t('advGood');
-    pill = t('advPillGood');
-  }
-
-  document.getElementById('advText').innerHTML = tmpl;
-  document.getElementById('advPill').textContent = pill;
-}
-
-/* ═══════════════════════════════════════════════════════
-   COUNTDOWN
-═══════════════════════════════════════════════════════ */
-function startCountdown(targetDate, wakeDate) {
-  if (countdownInterval) clearInterval(countdownInterval);
-
-  cdTotalSecs  = Math.floor((targetDate - wakeDate) / 1000);
-  cdStartSecs  = Math.floor((Date.now() - wakeDate) / 1000);
-
-  const resetMs = targetDate.getTime() - 15 * 60 * 1000;
-
+function startCd(target, resetT) {
+  if(interval) clearInterval(interval);
   function tick() {
-    const diff = targetDate.getTime() - Date.now();
-    const countdownCard = document.getElementById('countdownCard');
-    const countdownWrap = document.getElementById('countdownWrap');
-    const passedBadge   = document.getElementById('passedBadge');
-
-    if (diff <= 0) {
-      clearInterval(countdownInterval);
-      
-      // NEW: Gentle green fade-out instead of aggressive message
-      countdownCard.style.transition = 'all 1.5s ease';
-      countdownCard.style.background = 'linear-gradient(135deg, #6A9E7A 0%, #8BB08A 100%)';
-      countdownCard.style.transform = 'scale(0.98)';
-      countdownCard.style.opacity = '0.85';
-      
-      // Hide passed badge (no aggressive text)
-      passedBadge.classList.add('hidden');
-      
-      // After 3 seconds, gently fade out the entire countdown
-      setTimeout(() => {
-        countdownWrap.style.transition = 'opacity 1s ease, transform 1s ease';
-        countdownWrap.style.opacity = '0';
-        countdownWrap.style.transform = 'scale(0.95)';
-        setTimeout(() => {
-          countdownWrap.style.display = 'none';
-        }, 1000);
-      }, 3000);
-      
-      return;
-    }
-
-    countdownWrap.style.display = '';
-    countdownWrap.style.opacity = '1';
-    countdownWrap.style.transform = 'scale(1)';
-    passedBadge.classList.add('hidden');
-
-    // Time display
-    const totalMin = Math.floor(diff / 60000);
-    const h = Math.floor(totalMin / 60);
-    const m = totalMin % 60;
-    const s = Math.floor((diff % 60000) / 1000);
-
-    document.getElementById('cdTime').textContent =
-      h > 0 ? `${pad(h)}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
-
-    // Phase + emoji
-    const phases = LANG[currentLang].cdPhases;
-    let phase, emoji;
-
-    if (Date.now() >= resetMs) {
-      if (totalMin <= 2) { phase = phases.now;   emoji = '🔴'; }
-      else                { phase = phases.reset; emoji = '🌿'; }
-    } else if (totalMin <= 30) {
-      phase = phases.soon; emoji = '🌙';
-    } else {
-      phase = phases.safe; emoji = '⏳';
-    }
-
-    document.getElementById('cdPhase').textContent = phase;
-    document.getElementById('cdEmoji').textContent = emoji;
-
-    // Progress bar
-    const elapsedSecs = Math.floor((Date.now() - (targetDate - cdTotalSecs * 1000)) / 1000);
-    const pct = Math.min(100, Math.max(0, (elapsedSecs / cdTotalSecs) * 100));
-    document.getElementById('cdBar').style.width = pct + '%';
+    const diff = target - new Date();
+    if(diff <= 0) { clearInterval(interval); document.getElementById('cdT').textContent = "00:00"; document.getElementById('cdCard').classList.add('pulse'); return; }
+    const mins = Math.floor(diff/60000); const secs = Math.floor((diff%60000)/1000);
+    document.getElementById('cdT').textContent = `${pad(mins)}:${pad(secs)}`;
+    let p = L[cur].phases.s; if(new Date() > resetT) p = L[cur].phases.r; if(mins < 2) p = L[cur].phases.n;
+    document.getElementById('cdP').textContent = p;
   }
-
-  tick();
-  countdownInterval = setInterval(tick, 1000);
+  tick(); interval = setInterval(tick, 1000);
 }
 
-/* ═══════════════════════════════════════════════════════
-   HELPER FUNCTIONS
-═══════════════════════════════════════════════════════ */
+function resetUI() {
+  if(interval) clearInterval(interval); document.getElementById('res').classList.remove('visible');
+  document.getElementById('cdCard').classList.remove('pulse');
+  const now = new Date(); document.getElementById('wakeTime').value = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+}
 
-// Check if this might be a False Start scenario
-function checkFalseStart() {
-  const warning = document.getElementById('falseStartWarning');
+/* LOGIKA DNEVNIKA (7 DANA, GRUPIRANJE PO DATUMU, DROPDOWN) */
+function getJ() { try { return JSON.parse(localStorage.getItem('j') || '[]'); } catch { return []; } }
+
+function getDStr(ts) {
+  const d = new Date(ts || Date.now()); // Fallback za stare unose bez ts
+  return `${pad(d.getDate())}.${pad(d.getMonth()+1)}.${d.getFullYear()}.`;
+}
+
+function saveJ(e) { 
+  let j = getJ(); j.unshift(e); 
+  // Zadržavamo samo zadnjih 7 dana koristeći apsolutno vrijeme (milisekunde)
+  const sevenDaysAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
+  j = j.filter(x => (x.ts || Date.now()) >= sevenDaysAgo);
+  localStorage.setItem('j', JSON.stringify(j)); renderJ(); 
+}
+
+function del(id) { const j = getJ().filter(x=>x.id!==id); localStorage.setItem('j', JSON.stringify(j)); renderJ(); }
+
+function renderJ() {
+  const j = getJ(); 
+  const section = document.getElementById('jSection');
+  const select = document.getElementById('jDateSelect');
   
-  // If user calculated within last 15 minutes, might be False Start
-  if (lastCalcTime && (Date.now() - lastCalcTime < 15 * 60 * 1000)) {
-    warning.classList.remove('hidden');
-  } else {
-    warning.classList.add('hidden');
-  }
-}
+  if(j.length === 0) { section.classList.remove('visible'); return; }
+  section.classList.add('visible');
 
-// Categorize nap for Smart Learning (future feature)
-function getNapCategory(napMin) {
-  if (napMin < 45) return 'short';
-  return 'long';
-}
+  // Izvlačenje unikatnih datuma (najnoviji prvi)
+  const dates = [...new Set(j.map(x => getDStr(x.ts)))];
+  const currentSel = select.value;
 
-// SMART LEARNING PREPARATION
-// Future feature: Track patterns and suggest WW adjustments
-// TODO: Implement auto-adjustment logic:
-//   - If last 3 naps were all "short" (<45min), suggest +10min WW increase
-//   - If last 3 naps were all "long" (>60min), suggest -5min WW decrease
-//   - Pattern detection: analyze journal entries for optimal WW per age
-function analyzeNapPatterns() {
-  const entries = getJournal().slice(0, 10); // last 10 entries
-  const recent = entries.slice(0, 3);
-  
-  // Check if all recent naps were short
-  const allShort = recent.every(e => e.napCategory === 'short');
-  const allLong = recent.every(e => e.napMin > 60);
-  
-  // Future: Display suggestion banner
-  // if (allShort) { showSuggestion('Consider increasing WW by +10min'); }
-  // if (allLong) { showSuggestion('Consider decreasing WW by -5min'); }
-  
-  return { allShort, allLong, recent };
-}
-
-// Save current form state to localStorage
-function saveLastState() {
-  const state = {
-    age: selectedAge,
-    wakeTime: document.getElementById('wakeTime').value,
-    napMin: parseInt(document.getElementById('napSlider').value),
-    timestamp: Date.now()
-  };
-  localStorage.setItem(STORAGE_KEYS.lastState, JSON.stringify(state));
-}
-
-// Load last state from localStorage
-function loadLastState() {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEYS.lastState);
-    if (!saved) return;
-    
-    const state = JSON.parse(saved);
-    
-    // Only restore if less than 24h old
-    if (Date.now() - state.timestamp > 24 * 60 * 60 * 1000) return;
-    
-    // Restore form values
-    selectedAge = state.age;
-    document.getElementById('wakeTime').value = state.wakeTime;
-    document.getElementById('napSlider').value = state.napMin;
-    
-    // Update UI
-    renderAgeGrid();
-    onSlider(document.getElementById('napSlider'));
-    updateWWHint();
-    
-  } catch (e) {
-    console.warn('Could not restore last state:', e);
-  }
-}
-
-/* ═══════════════════════════════════════════════════════
-   JOURNAL (localStorage)
-═══════════════════════════════════════════════════════ */
-function getJournal() {
-  try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEYS.journal) || '[]');
-  } catch { return []; }
-}
-
-function setJournal(entries) {
-  localStorage.setItem(STORAGE_KEYS.journal, JSON.stringify(entries));
-}
-
-function saveJournalEntry(entry) {
-  const entries = getJournal();
-  entries.unshift(entry); // newest first
-  if (entries.length > 50) entries.length = 50; // cap
-  setJournal(entries);
-  renderJournal();
-}
-
-function deleteJournalEntry(id) {
-  const entries = getJournal().filter(e => e.id !== id);
-  setJournal(entries);
-  renderJournal();
-}
-
-function clearJournal() {
-  if (!confirm(currentLang === 'hr' ? 'Obrisati sve unose?' : 'Delete all entries?')) return;
-  setJournal([]);
-  renderJournal();
-}
-
-function renderJournal() {
-  const entries = getJournal();
-  const list    = document.getElementById('journalList');
-  const empty   = document.getElementById('journalEmpty');
-  const count   = document.getElementById('journalCount');
-
-  count.textContent = entries.length;
-
-  if (entries.length === 0) {
-    empty.classList.remove('hidden');
-    list.innerHTML = '';
-    return;
-  }
-
-  empty.classList.add('hidden');
-  list.innerHTML = entries.map(e => {
-    const d     = new Date(e.ts);
-    const dateStr = LANG[currentLang].entryDateFmt(d);
-    return `
-    <div class="journal-entry" id="je-${e.id}">
-      <div class="entry-left">
-        <div class="entry-date">${dateStr}</div>
-        <div class="entry-row">
-          <span class="entry-time-big">${e.wakeTime}</span>
-          <span class="entry-arrow">→</span>
-          <span class="entry-time-big">${e.targetTime}</span>
-        </div>
-        <div class="entry-chips">
-          <span class="entry-chip age">${LANG[currentLang].entryAge(e.age)}</span>
-          <span class="entry-chip nap">${LANG[currentLang].entryNap(e.napMin)}</span>
-          <span class="entry-chip ww">${LANG[currentLang].entryWW(e.wwRange)}</span>
-        </div>
-      </div>
-      <button class="entry-delete" onclick="deleteJournalEntry(${e.id})" title="${LANG[currentLang].deleteTitle}">✕</button>
-    </div>`;
+  select.innerHTML = dates.map(d => {
+    const isToday = d === getDStr(Date.now());
+    return `<option value="${d}">📅 ${isToday ? 'Danas ('+d+')' : d}</option>`;
   }).join('');
+
+  // Zadrži odabir ako postoji, inače prikaži najnoviji datum (današnji)
+  if (dates.includes(currentSel)) select.value = currentSel;
+  else select.value = dates[0];
+
+  renderJList();
 }
 
-/* ═══════════════════════════════════════════════════════
-   RESET
-═══════════════════════════════════════════════════════ */
-function resetCalc() {
-  if (countdownInterval) clearInterval(countdownInterval);
+function renderJList() {
+  const j = getJ();
+  const selDate = document.getElementById('jDateSelect').value;
+  const list = document.getElementById('jList');
   
-  // Hide results
-  document.getElementById('results').classList.remove('visible');
-  document.getElementById('passedBadge').classList.add('hidden');
-  document.getElementById('falseStartWarning').classList.add('hidden');
-  
-  // Reset countdown styling
-  const countdownCard = document.getElementById('countdownCard');
-  const countdownWrap = document.getElementById('countdownWrap');
-  countdownCard.style.background = 'linear-gradient(135deg, #2C2420 0%, #3D2E4A 100%)';
-  countdownCard.style.opacity = '1';
-  countdownCard.style.transform = 'scale(1)';
-  countdownWrap.style.display = '';
-  countdownWrap.style.opacity = '1';
-  countdownWrap.style.transform = 'scale(1)';
-  
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  const filtered = j.filter(x => getDStr(x.ts) === selDate);
+
+  list.innerHTML = filtered.map(x => `
+    <div class="journal-entry">
+      <div>
+        <div class="entry-time">${x.w} → ${x.t}</div>
+        <div class="entry-details">${x.age}${L[cur].ageU} · ${x.nap}m sna</div>
+      </div>
+      <button class="del-btn" onclick="del(${x.id})">✕</button>
+    </div>`).join('');
 }
 
-/* ═══════════════════════════════════════════════════════
-   UTILS
-═══════════════════════════════════════════════════════ */
-function fmtMin(m) {
-  if (m < 60) return `${m}min`;
-  const h   = Math.floor(m / 60);
-  const rem = m % 60;
-  return rem === 0 ? `${h}h` : `${h}h${rem}m`;
-}
+function save() { localStorage.setItem('state', JSON.stringify({sel, n:document.getElementById('napSlider').value, ts:Date.now()})); }
+function pad(n) { return String(n).padStart(2,'0'); }
+function fmt(d) { return `${pad(d.getHours())}:${pad(d.getMinutes())}`; }
 
-function fmt(d) {
-  return d.toLocaleTimeString('default', { hour: '2-digit', minute: '2-digit', hour12: false });
-}
-
-function pad(n) { return String(n).padStart(2, '0'); }
-
-/* ═══════════════════════════════════════════════════════
-   INIT
-═══════════════════════════════════════════════════════ */
 (function init() {
-  // Load saved language preference
-  const savedLang = localStorage.getItem(STORAGE_KEYS.lang);
-  if (savedLang && (savedLang === 'hr' || savedLang === 'en')) {
-    currentLang = savedLang;
-  }
-  
-  // Load last state (form values)
-  loadLastState();
-  
-  // If no saved state, set current time as default
-  if (!document.getElementById('wakeTime').value) {
-    const now = new Date();
-    document.getElementById('wakeTime').value =
-      `${pad(now.getHours())}:${pad(now.getMinutes())}`;
-  }
-
-  renderAgeGrid();
-  updateWWHint();
-  onSlider(document.getElementById('napSlider'));
-  applyTranslations();
-  renderJournal();
-  
-  // Apply language UI state
-  document.getElementById('btnHR').classList.toggle('active', currentLang === 'hr');
-  document.getElementById('btnEN').classList.toggle('active', currentLang === 'en');
+  const s = JSON.parse(localStorage.getItem('state')); if(s && Date.now()-s.ts < 86400000) { sel=s.sel; document.getElementById('napSlider').value=s.n; }
+  const now = new Date(); document.getElementById('wakeTime').value = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  setLang(localStorage.getItem('lang') || 'hr');
 })();
 </script>
 </body>
